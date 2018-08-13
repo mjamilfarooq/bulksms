@@ -1,0 +1,68 @@
+<script>
+
+$(document).ready(function(){
+    $('.form-group > label').css('color','#E95E45');    
+    
+    $('#popover_add').validate({
+        errorPlacement: function (error, element) {
+            error.appendTo(element.parent('div'));
+        },
+        messages:{
+            cell: 'Must have cell number',
+
+        }
+    });
+
+    $('input').addClass('input-sm');
+    $('input[type=submit]').addClass('btn btn-sm');
+    $('.form-group').css('margin-bottom', '5px');
+});
+
+function kill_popover(){
+    $('[data-toggle=popover]').popover('hide');
+}
+</script>
+<form id='popover_add'  action='<?php echo $form_action; ?>'  method='post' name='subscriptionForm' enctype='multipart/form-data' class='form-horizontal'>    
+    <div class='container col-sm-12'>
+        
+        <input name='id' hidden='' value='<?php echo $subscription->id;?>'>
+        <div class='form-group'>
+        <label class='col-sm-4 control-label'>First Name</label>
+            <div class='col-sm-8'><input name='first_name' class='form-input' type='text' value='<?php echo $subscription->first_name;?>'></div>
+        </div>
+
+        <div class='form-group'>
+        <label class='col-sm-4 control-label'>Last Name</label>
+            <div class='col-sm-8'><input name='last_name' class='form-input' type='text' value='<?php echo $subscription->last_name;?>'></div>
+        </div>
+
+        <div class='form-group required'>
+        <label class='col-sm-4 control-label'>Cell</label>
+            <div class='col-sm-8'><input required='required' name='cell' class='form-input' type='text' value='<?php echo $subscription->cell;?>'></div>
+        </div>
+
+        <div class='form-group'>
+        <label class='col-sm-4 control-label'>Email</label>
+            <div class='col-sm-8'><input name='email' class='form-input' type='text' value='<?php echo $subscription->email;?>'></div>
+        </div>
+
+        <div class='form-group'>
+        <label class='col-sm-4 control-label'>Street Address</label>
+            <div class='col-sm-8'><input name='street_address' class='form-input' type='text' value='<?php echo $subscription->street_address;?>'></div>
+        </div>
+
+        <div class='form-group'>
+        <label class='col-sm-4 control-label'></label>
+        <div class='col-sm-8'><input name='submit' class='form-input' type='submit' value='<?php echo $submit_text;?>'></div>
+        </div>
+        
+        <div class='form-group'>
+            <label class='col-lg-4 control-label'></label>
+            <div class='col-lg-8'>
+                <button name='Cancel' onclick='kill_popover();' class='btn btn-sm' value='Cancel'>Cancel</button>
+            </div>
+        </div>
+        
+    </div>
+</form>
+

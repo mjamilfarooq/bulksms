@@ -1,0 +1,185 @@
+<script>
+    $(document).ready(function(){
+        $('#datetimepicker1').datetimepicker({ format: 'YYYY-MM-DD', maxDate: moment()});
+        
+        $('#Signup').validate({
+            errorPlacement: function (error, element) {
+                
+                if ( element.attr("name") == "date_of_birth" ){
+                    error.appendTo(element.parent('div').next('p'));
+                } else if ( element.attr("name") == "mobile_number" ) {
+                    error.appendTo(element.parent('div').parent('div'))
+                }
+                else 
+                    error.appendTo(element.parent('div'));
+            },
+            messages: {
+                first_name: "Your first name is required",
+                last_name: "Your last name is required",
+                email: {
+                    required: "Your email contact is required",
+                    email: "Entry must be a valid email address",
+                },
+                company: "Your place of work is required",
+                date_of_birth: {
+                    required: "Please enter your date of birth",
+                },
+                mobile_number: "Enter your mobile number",
+            }
+        });
+        
+        $("input[name=mobile_number]").intlTelInput({
+            defaultCountry: "auto",
+            geoIpLookup: function(callback) {
+              $.get('http://ipinfo.io', function() {}, "jsonp").always(function(resp) {
+                var countryCode = (resp && resp.country) ? resp.country : "";
+                callback(countryCode);
+              });
+            },
+//            utilsScript: "../../lib/libphonenumber/build/utils.js" // just for formatting/placeholders etc
+        });
+        
+        $('.country-list').css('color', '#494949');
+        
+        $('select').addClass('input-sm');
+        $('input').addClass('input-sm');
+        $('button').addClass('btn-sm');
+    });
+    
+    function extract_country_code(){
+        var countryData = $("input[name=mobile_number]").intlTelInput("getSelectedCountryData");
+        $('input[name=country_code]').val(countryData.dialCode);
+    }
+    
+    
+</script>
+
+<div class="col-lg-offset-1 col-lg-6" style='margin-top: 50px;'>    
+<?php 
+$form = $this->form;
+$form->prepare();
+$form->setAttribute('action', $this->url(NULL, array('controller'=>'signup', 'action' => 'process')));
+$form->setAttribute('method', 'post');
+$form->setAttribute('class', 'form-horizontal');
+$form->setAttribute('onsubmit', 'extract_country_code()');
+
+echo $this->form()->openTag($form);
+?>
+    <div class='jumbotron'>
+        
+           
+        <h3><b>Create a new account</b></h3>
+        <div class="form-group">
+            <label></label>
+            <div>
+                <span style="color: red">
+                    <?php if ($this->error) {
+                            echo $this->error;
+                          }
+                    ?>
+                </span>
+            </div>
+        </div>
+        
+        <div class="form-group required">
+            <?php echo $this->formLabel($form->get('first_name')); ?>
+            <div><?php 
+                echo $this->formElement($form->get('first_name'));
+                echo $this->formElementErrors($form->get('first_name'));
+            ?></div>
+            
+        </div>
+        
+        <div class="form-group required">
+            <?php echo $this->formLabel($form->get('last_name')); ?>
+            <div><?php 
+                echo $this->formElement($form->get('last_name'));
+                echo $this->formElementErrors($form->get('last_name'));
+            ?></div>
+            
+        </div>
+        
+        
+        <div class="form-group required">
+            <?php echo $this->formLabel($form->get('email')); ?>
+            <div><?php 
+                echo $this->formElement($form->get('email'));
+                echo $this->formElementErrors($form->get('email'));
+            ?></div>
+        </div>
+        
+        <div class="form-group required">
+            <?php echo $this->formLabel($form->get('country_region')); ?>
+            <div><?php 
+                echo $this->formElement($form->get('country_region'));
+                echo $this->formElementErrors($form->get('country_region'));
+            ?></div>
+        </div>
+
+        <div class="form-group required">
+            <?php echo $this->formLabel($form->get('company')); ?>
+            <div><?php 
+                echo $this->formElement($form->get('company'));
+                echo $this->formElementErrors($form->get('company'));
+            ?></div>
+        </div>
+        
+        
+        <div class="form-group required">
+            <?php echo $this->formLabel($form->get('date_of_birth')); ?>
+            <div>
+                <div class="input-group" id="datetimepicker1" style="color: black;">
+                    <?php 
+                        echo $this->formElement($form->get('date_of_birth'));
+                        echo $this->formElementErrors($form->get('date_of_birth'));
+                    ?>
+                    <span class="input-group-addon glyphicon glyphicon-calendar">
+                                               
+                    </span>
+                </div>
+                <p></p>
+            </div>
+        </div>
+
+        
+        <div class="form-group required">
+            <?php echo $this->formLabel($form->get('gender')); ?>
+            <div><?php 
+                echo $this->formElement($form->get('gender'));
+                echo $this->formElementErrors($form->get('gender'));
+            ?></div>
+        </div>
+
+        <div class="form-group required hidden">
+        <?php echo $this->formLabel($form->get('country_code')); ?>
+        <div><?php 
+            echo $this->formElement($form->get('country_code'));
+            echo $this->formElementErrors($form->get('country_code'));
+        ?></div>
+        </div>
+
+
+        <div class="form-group required">
+            <?php echo $this->formLabel($form->get('mobile_number')); ?>
+            <div><?php 
+                echo $this->formElement($form->get('mobile_number'));
+                echo $this->formElementErrors($form->get('mobile_number'));
+            ?></div>
+            <p></p>
+        </div>
+        
+        
+        <div class="form-group">
+            <label></label>
+            <div><?php 
+            echo $this->formElement($form->get('submit'));
+            echo $this->formElementErrors($form->get('submit'));
+        ?></div>
+        </div>
+        
+    </div>
+
+
+<?php echo $this->form()->closeTag() ?>
+</div>
+

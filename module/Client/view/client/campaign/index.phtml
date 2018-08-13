@@ -1,0 +1,207 @@
+<script>
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover({html:true}); 
+//    window.setTimeout(function(){alert('helloworld!');}, 1000);
+//    window.setInterval(function(){location.reload();}, 10000);
+
+    var message = '<?php echo $this->flashMessenger()->render();?>';
+    if ( message !== "" ){
+        $('#dialog > p').html(message);
+        $('#dialog').dialog({ modal: true,
+                buttons: {
+                Ok: function() {
+                  $( this ).dialog( "close" );
+                }
+              }
+        });
+    }
+    
+    $('.ui-dialog-buttonset').addClass('col-md-12');
+    $('.ui-dialog-buttonset > button').addClass('btn btn-sm col-sm-2 pull-right');         
+
+});  
+
+function campaign_delete(href){
+    $('#dialog > p').html('Are you sure you want to delete this campaign? Press DELETE to continue deleting');
+    $('#dialog').prop("title", "Campaign deletion");
+    $('#dialog').dialog({ modal: true,
+            dialogClass: "no-close",
+            buttons: {
+                Cancel: function(){
+                    $( this ).dialog( "close" );
+                },
+                Delete: function() {
+                  window.location.href = href;
+
+                },
+                
+
+          }
+    });
+    
+    
+    $('.ui-dialog-buttonset').addClass('col-md-12');
+    $('.ui-dialog-buttonset > button').addClass('btn btn-sm col-sm-2 pull-right');
+    
+    return false;
+}
+
+
+</script>
+
+<ul class="breadcrumb">
+    <li><a href="<?php echo $this->url(NULL, array('controller' => 'home', 'action' => 'index'));?>">Home</a></li>
+    <li><a href="<?php echo $this->url(NULL, array('controller' => 'campaign', 'action' => 'index'));?>">Campaigns</a></li>
+    
+</ul>
+
+<div id="dialog" title="Alert!"><p></p></div>
+<div class="row">
+    
+    <h3><div class="col-lg-10">Campaigns </div>
+        <div class="col-lg-2" style="margin-bottom: 3px;">
+        <button class="btn btn-sm pull-right" onclick="window.location.href='<?php echo $this->url(NULL,
+        array('controller' => 'campaign', 'action'=>'add'));?>'"><span class="glyphicon glyphicon-plus"></span> Add New
+        </button>
+        </div>    
+    </h3>
+</div>
+
+    
+    <table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Message</th>
+            <th>Creation Date</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Progress</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <?php foreach ($this->paginator as $campaign) : ?>
+    <tr>
+        <td><?php echo $campaign->campaign_name;?></td>
+        <td><?php   if (strlen($campaign->message) > 15 ) 
+                        echo substr ($campaign->message, 0, 15).'...'; 
+                    else echo $campaign->message;?>
+        </td>
+        <td><?php echo $campaign->created_at;?></td>
+        <td><?php echo $campaign->start_time;?></td>
+        <td><?php echo $campaign->end_time;?></td>
+        <td><?php 
+                    $total = $this->count_array[$campaign->subscriber_list_id];
+                    
+                    if ( $total > 0 ){
+                        $sent = $campaign->row_current;
+                        $delivered = $campaign->delivery_receipt_received > $campaign->row_current 
+                                ? $sent: $campaign->delivery_receipt_received;
+                        $submitted = $campaign->submit_response_received > $campaign->row_current 
+                                ? $sent: $campaign->submit_response_received;
+
+                        $success = ($delivered)/$total*100;
+                        $warning = ($submitted-$delivered)/$total*100;
+                        $danger = ($sent - $submitted)/$total*100;
+                        $info = ($total-$sent)/$total*100;
+                    }
+                    
+                  
+            ?>
+            <div class='progress'>
+                <div title='Messages successfully delivered' class='progress-bar progress-bar-success' role='progressbar' style='width:<?php echo $success;?>%'>Delivered</div>
+                <div title="Messages submitted to SMSC" class='progress-bar progress-bar-warning' role='progressbar' style='width:<?php echo $warning;?>%'>Submitted</div>
+                <div title='BulkSMS has sent message to SMSC' class='progress-bar progress-bar-danger' role='progressbar' style='width:<?php echo $danger;?>%'>Sent</div>
+                <div title="Pending messages" class='progress-bar progress-bar-info' role='progressbar' style='width:<?php echo $info;?>%'>Pending</div>
+            </div>
+        </td>
+        <td> 
+            <a href="<?php echo $this->url(NULL, array( 'controller' => 'campaign', 'action'=>'edit', 'id' => $campaign->campaign_id));?>"><span class="glyphicon glyphicon-edit"></span></a> 
+            <a href="<?php echo $this->url(NULL, array( 'controller' => 'campaign', 'action'=>'delete', 'id' => $campaign->campaign_id));?>" onclick="return campaign_delete($(this).attr('href'));"><span class="glyphicon glyphicon-trash"></span></a> 
+            <a title="Progress" href="#" data-placement="left" data-toggle="popover" data-content="
+               <div>
+               <p><label>Total Subscribers: </label> <?php echo $this->count_array[$campaign->subscriber_list_id];?></p>
+               <p><label>Sent: </label> <?php echo $campaign->row_current;?></p>
+               <p><label>Submitted: </label> <?php echo $campaign->submit_response_received;?></p>
+               <p><label>Delivered: </label> <?php echo $campaign->delivery_receipt_received;?></p>
+               
+               </div>
+               "
+               ><span class="glyphicon glyphicon-stats"></span></a>
+            <div class="progress-bar">
+                
+            </div>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+</table>
+    <?php if ( $this->paginator->count() > 0 ) {?>
+ <div align="center">
+    <ul class="pagination">
+        <?php 
+            $currentPage = $this->paginator->getCurrentPageNumber();
+            $lastPage = $this->paginator->count();
+            $id = 1;
+            if ( $lastPage < 10 ){
+                $start_pos = 1;
+                $last_pos = $lastPage;
+            }else{
+                if ( $currentPage < 10 ){
+                    $start_pos = 1;
+                    $last_pos = 10;
+                }else if ( $currentPage > $lastPage - 10){
+                    $start_pos = $lastPage-10;
+                    $last_pos = $lastPage;
+                } else {
+                    $start_pos = $currentPage-5;
+                    $last_pos = $currentPage+5;
+                }
+            }
+        ?>
+        <li><a href="<?php echo $this->url(NULL, 
+                            array("controller" => 'campaign', 
+                                'action' => 'index', 
+                                'id' => $id, 
+                                'page' => 1,
+                                'search_string' => $search_string,
+                            ));?>" <?php if ( $currentPage == 1 ) echo 'class=\'not-active\'';?>> << </a></li>     
+        <li><a href="<?php echo $this->url(NULL, 
+                            array("controller" => 'campaign', 
+                                'action' => 'index', 
+                                'id' => $id, 
+                                'page' => $currentPage-1,
+                                'search_string' => $search_string,
+                            ));?>" <?php if ( $currentPage == 1 ) echo 'class=\'not-active\'';?>> < </a></li>     
+        <?php
+            for ($page_number=$start_pos; $page_number<= $last_pos; $page_number++){
+        ?>
+        <li class="<?php if ($page_number == $currentPage) echo "active";?>"><a href="<?php echo $this->url(NULL, 
+                            array("controller" => 'campaign', 
+                                'action' => 'index', 
+                                'id' => $id, 
+                                'page' => $page_number,
+                                'search_string' => $search_string,
+                            ));?>"><?php echo $page_number;?></a></li>
+        <?php }?>
+        <li><a href="<?php echo $this->url(NULL, 
+                            array("controller" => 'campaign', 
+                                'action' => 'index', 
+                                'id' => $id, 
+                                'page' => $currentPage+1,
+                                'search_string' => $search_string,
+                            ));?>" <?php if ( $currentPage == $lastPage ) echo 'class=\'not-active\'';?>> > </a></li>     
+        <li ><a  href="<?php echo $this->url(NULL, 
+                            array("controller" => 'campaign', 
+                                'action' => 'index', 
+                                'id' => $id, 
+                                'page' => $lastPage,
+                                'search_string' => $this->search_string,
+                            ));?>" <?php if ( $currentPage == $lastPage ) echo 'class=\'not-active\'';?> > >> </a></li>     
+    </ul>
+
+</div>
+    <?php }?>
+
+  
+
+

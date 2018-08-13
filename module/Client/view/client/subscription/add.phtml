@@ -1,0 +1,110 @@
+<script>
+$(document).ready(function(){
+    
+    $('#SubscriberListForm').validate({
+        errorPlacement: function (error, element) {
+            error.appendTo(element.parent('div'));
+        },
+        messages: {
+            list_name: "Please enter subscriber list name",
+            description: "Please enter description for the list",
+        }
+    });
+    
+    var action = '<?php echo $this->action;?>';
+    if ( action === 'process' ){
+        $('input[name=submit]').val('Create');
+    }else {
+        $('input[name=submit]').val('Update');
+    }
+    
+    $('.form-group > label').css('color','#E95E45');
+    $('.disable_for_edit > div > select').prop('disabled', true);
+    
+    $('input[type=submit]').addClass('btn btn-sm');
+    $('input').addClass('input-sm');
+    $('select').addClass('input-sm');
+    
+    $('.form-group').css('margin-bottom', '3px');
+    
+});</script>     
+
+
+<ul class="breadcrumb">
+    <li><a href="<?php echo $this->url(NULL, array('controller' => 'home', 'action' => 'index'));?>">Home</a></li>
+    <li><a href="<?php echo $this->url(NULL, array('controller' => 'subscription', 'action' => 'index'));?>">Subscriptions</a></li>
+    <li><?php if ( 0 == strcmp($this->action, "process") ) echo "Add"; 
+              else echo "Edit";
+              ?>
+    </li>
+</ul>
+
+<?php 
+$form = $this->form;
+$form->prepare();
+$form->setAttribute('action', '/client/subscription/'.$this->action);
+$form->setAttribute('method', 'post');
+$form->setAttribute('class', 'form-horizontal');
+
+echo $this->form()->openTag($form);
+?>
+<div class='col-md-8'>
+<!--    <div class='jumbotron'>-->
+        <h3 ><?php echo $this->title; ?></h3>
+        <?php echo $this->formElement($form->get('list_id'));?>
+        <?php 
+        $form->get('client_id')->setValue($user_data->id);
+        echo $this->formElement($form->get('client_id'));
+        ?>
+        
+        <div class="form-group required">
+            <?php echo $this->formLabel($form->get('list_name')); ?>
+            <div><?php 
+                echo $this->formElement($form->get('list_name'));
+                echo $this->formElementErrors($form->get('list_name'));
+            ?></div>
+        </div>
+        
+        <div class="form-group required <?php if (strcmp($this->action, "process")) echo 'disable_for_edit';?>">
+            <?php echo $this->formLabel($form->get('package_id')); ?>
+            <div><?php 
+                echo $this->formElement($form->get('package_id'));
+                echo $this->formElementErrors($form->get('package_id'));
+            ?></div>
+        </div>
+
+        <div class="form-group">
+            <?php echo $this->formLabel($form->get('enabled')); ?>
+            <div><?php 
+                echo $this->formElement($form->get('enabled'));
+                echo $this->formElementErrors($form->get('enabled'));
+            ?></div>
+        </div>
+        
+        <div class="form-group">
+            <?php echo $this->formLabel($form->get('description')); ?>
+            <div><?php 
+                echo $this->formElement($form->get('description'));
+                echo $this->formElementErrors($form->get('description'));
+            ?></div>
+        </div>
+        
+        <div class="form-group">
+            <label> </label>
+            <div><?php 
+            echo $this->formElement($form->get('submit'));
+            echo $this->formElementErrors($form->get('submit'));
+        ?></div>
+        </div>
+        
+        <div class="form-group">
+            <label> </label>
+            <div>
+                <button name="Cancel"  onclick="window.location.href='/client/subscription/index'; return false;" class="btn btn-sm ">Cancel</button>
+            </div>
+        </div>
+
+    <!--</div>-->
+</div>
+
+<?php echo $this->form()->closeTag() ?>

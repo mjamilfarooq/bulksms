@@ -1,0 +1,211 @@
+<script>
+    $(function () {
+        $('#Campaign').validate({
+            errorPlacement: function (error, element) {
+                
+//                if ( element.attr("name") == "date_of_birth" ){
+//                    error.appendTo(element.parent('div').next('p'));
+//                } else if ( element.attr("name") == "mobile_number" ) {
+//                    error.appendTo(element.parent('div').parent('div'))
+//                }
+//                else 
+                    error.appendTo(element.parent('div'));
+            },
+            messages: {
+                campaign_name: "Please enter campaign name",
+                message: "Please enter message for campaign",
+                start_time: "Please select Date/Time for campaign to start",
+                end_time: "Please select End Date/Time for campaign",
+                source_address: "Please enter message source",
+            }
+        });
+        
+        
+        
+        
+        var action = '<?php echo $this->action;?>';
+        if ( action === 'editprocess' ){
+            $('#datetimepicker1').datetimepicker({ format: 'YYYY-MM-DD HH:mm:ss'});
+            $('#datetimepicker2').datetimepicker({ format: 'YYYY-MM-DD HH:mm:ss'});
+            $('input[name=submit]').val('Update');
+            var is_editable = <?php echo json_encode($this->is_editable);?>;
+            
+            if ( is_editable === false ){
+                
+                $('input[type!=submit]').prop('disabled', true).css('background-color', 'white');
+                $('select').prop('disabled', true);
+                $('textArea').prop('disabled', true).css('background-color', 'white');
+                
+                
+            }
+        }
+        else {
+            $('#datetimepicker1').datetimepicker(
+                    { format: 'YYYY-MM-DD HH:mm:ss', 
+                      minDate: moment(),
+            });
+            $('#datetimepicker2').datetimepicker({ format: 'YYYY-MM-DD HH:mm:ss', minDate: moment()});
+        }
+        
+        $('#datetimepicker1').on('dp.change', function (e){
+            var start = $('#datetimepicker1').data('DateTimePicker').date();
+            var end = e.date;
+            
+            $('#datetimepicker2').data('DateTimePicker').minDate(start); 
+        });
+        
+//        $('#datetimepicker2').on('dp.change', function(e){
+//            var start = $('#datetimepicker1').data('DateTimePicker').date();
+//            var end = e.date;
+//            if ( end - start < 0 ){
+//                alert ("End date must be after start date");
+//                $('#datetimepicker2').datetimepicker({ format: 'YYYY-MM-DD HH:mm:ss', minDate: start});
+//            }
+//        });
+        
+        
+        $('.form-group > label').css('color','#E95E45');
+        
+        
+        $('input[type=submit]').addClass('btn btn-sm');
+        $('input').addClass('input-sm');
+        $('select').addClass('input-sm');
+
+        $('.form-group').css('margin-bottom', '3px');
+        
+    });
+</script>
+    
+<!--<div class="col-md-offset-1 col-md-8" >-->    
+<?php 
+$form = $this->form;
+$form->prepare();
+$form->setAttribute('action', '/client/campaign/'.$this->action);
+$form->setAttribute('method', 'post');
+$form->setAttribute('class', 'form-horizontal');
+
+echo $this->form()->openTag($form);
+?>
+
+<ul class="breadcrumb">
+    <li><a href="<?php echo $this->url(NULL, array('controller' => 'home', 'action' => 'index'));?>">Home</a></li>
+    <li><a href="<?php echo $this->url(NULL, array('controller' => 'campaign', 'action' => 'index'));?>">Campaigns</a></li>
+    <li><?php if (strcmp($this->action, "editprocess") == 0) echo "Edit"; else echo "Add New";?></li>
+</ul>
+
+<!--    <div class='jumbotron'>-->
+<div class='col-md-8'>
+        <!--<h3 ><?php echo $this->title; ?></h3>-->
+        
+        <div class="form-group required">
+            <?php echo $this->formLabel($form->get('subscriber_list_id')); ?>
+            <div><?php 
+                echo $this->formElement($form->get('subscriber_list_id'));
+                echo $this->formElementErrors($form->get('subscriber_list_id'));
+            ?></div>
+        </div>
+        
+        <?php echo $this->formElement($form->get('campaign_id'));?>
+        
+        <div class="form-group required">
+            <?php echo $this->formLabel($form->get('campaign_name')); ?>
+            <div><?php 
+                echo $this->formElement($form->get('campaign_name'));
+                echo $this->formElementErrors($form->get('campaign_name'));
+            ?></div>
+        </div>
+
+
+        <div class="form-group required">
+        <?php echo $this->formLabel($form->get('message')); ?>
+        <div><?php 
+            echo $this->formElement($form->get('message'));
+            echo $this->formElementErrors($form->get('message'));
+        ?></div>
+        </div>
+
+
+        <div class="form-group required">
+            <?php echo $this->formLabel($form->get('start_time')); ?>
+            <div>
+                <div class="input-group" id="datetimepicker1">
+                    <?php 
+                        echo $this->formElement($form->get('start_time'));
+                        echo $this->formElementErrors($form->get('start_time'));
+                    ?>
+                    <span class="input-group-addon glyphicon glyphicon-calendar">
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        
+        <div class="form-group required">
+            <?php echo $this->formLabel($form->get('end_time')); ?>
+            <div>
+                <div class="input-group" id='datetimepicker2'>
+                    <?php 
+                        echo $this->formElement($form->get('end_time'));
+                        echo $this->formElementErrors($form->get('end_time'));
+                    ?>
+                    <span class="input-group-addon glyphicon glyphicon-calendar">
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group required">
+        <?php echo $this->formLabel($form->get('encoding')); ?>
+        <div><?php 
+            echo $this->formElement($form->get('encoding'));
+            echo $this->formElementErrors($form->get('encoding'));
+        ?></div>
+        </div>
+        
+        <div class="form-group required">
+        <?php echo $this->formLabel($form->get('source_address')); ?>
+        <div ><?php 
+            echo $this->formElement($form->get('source_address'));
+            echo $this->formElementErrors($form->get('source_address'));
+        ?></div>
+        </div>
+        
+        <div class="form-group">
+        <?php echo $this->formLabel($form->get('delivery_receipt_flag')); ?>
+        <div><?php 
+            echo $this->formElement($form->get('delivery_receipt_flag'));
+            echo $this->formElementErrors($form->get('delivery_receipt_flag'));
+        ?></div>
+        </div>
+        
+        <div class="form-group">
+        <?php echo $this->formLabel($form->get('active')); ?>
+        <div><?php 
+            echo $this->formElement($form->get('active'));
+            echo $this->formElementErrors($form->get('active'));
+        ?></div>
+        </div>
+        
+        <div class="form-group">
+            <label> </label>
+            <div><?php 
+            echo $this->formElement($form->get('submit'));
+            echo $this->formElementErrors($form->get('submit'));
+            ?>
+            </div>
+        </div>
+    
+        <div class="form-group">
+            <label> </label>
+            <div>
+                <button name="Cancel" onclick="window.location.href='/client/campaign/index'; return false;" class="btn btn-sm" value="Cancel">Cancel</button>
+            </div>
+        </div>
+        
+
+</div>
+    <!--</div>-->
+
+
+<?php echo $this->form()->closeTag() ?>
+<!--</div>-->

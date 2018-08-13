@@ -1,0 +1,437 @@
+<script>
+    $(function(){
+        $("input[type=file]").nicefileinput();
+    });
+</script>
+
+<script>
+$(document).ready(function(){
+    
+    
+    
+    $('[data-toggle="popover"]').popover({html:true}); 
+    
+    var error = '<?php echo $this->error;?>';
+    if ( error == 'No record found!'){
+        
+        $('#dialog > p').html('No record found!');
+        $('#dialog').dialog({ modal: true,
+                buttons: {
+                Ok: function() {
+                  $( this ).dialog( "close" );
+                }
+              }
+        });
+        
+        
+    }
+    
+    var message = '<?php echo $this->flashMessenger()->render();?>';
+    
+    if ( message !== "" ){
+        
+        $('#dialog > p').html(message);
+        $('#dialog').dialog({ modal: true,
+                buttons: {
+                Ok: function() {
+                  $( this ).dialog( "close" );
+                }
+              }
+        });
+        
+        
+    }
+    
+    $('.ui-dialog-buttonset').addClass('col-md-12');
+    $('.ui-dialog-buttonset > button').addClass('btn btn-sm col-sm-2 pull-right');
+    
+    $('.form-group > label').css('color','#E95E45');
+    $('.NFI-button').addClass('btn btn-sm');
+   
+});
+
+function subscriber_delete(href){
+    
+    $('#dialog > p').html('Are you sure you want to delete this subscriber? Press DELETE to continue deleting');
+    $('#dialog').prop("title", "Subscriber deletion");
+    $('#dialog').dialog({ modal: true,
+            dialogClass: "no-close",
+            buttons: {
+                Cancel: function(){
+                    $( this ).dialog( "close" );
+                },
+                Delete: function() {
+                  window.location.href = href;
+                    
+                },
+                
+
+          }
+    });
+    
+    
+    $('.ui-dialog-buttonset').addClass('col-md-12');
+    $('.ui-dialog-buttonset > button').addClass('btn btn-sm col-sm-2 pull-right');
+    
+    return false;
+}
+
+function empty_search(){
+    var search_string = '<?php echo $this->search_string?>';
+    if ( $('#search_control').val() == '' && search_string === ''){
+        $('#dialog > p').html('Please enter the search keyword');
+        $('#dialog').dialog({ modal: true,
+                buttons: {
+                OK: function() {
+                  $( this ).dialog( "close" );
+                }
+              }
+        });
+        
+        $('.ui-dialog-buttonset').addClass('col-md-12');
+        $('.ui-dialog-buttonset > button').addClass('btn btn-sm col-sm-2 pull-right');
+        return false;
+    }
+}
+
+function no_file(){
+//    alert('upload');
+    if ( $('#upload_control').val() == '' ){
+        
+        $('#dialog > p').html('Please upload CSV format contact file');
+        $('#dialog').dialog({ modal: true,
+                buttons: {
+                Ok: function() {
+                  $( this ).dialog( "close" );
+                }
+              }
+        });
+        
+        $('.ui-dialog-buttonset').addClass('col-md-12');
+        $('.ui-dialog-buttonset > button').addClass('btn btn-sm col-sm-2 pull-right');
+        
+        return false;
+    }
+}
+
+function search_key(value){
+    if ( value === '' ){
+        var myURL = document.location;
+        document.location = myURL;//+"?search_string=''";
+    }
+}
+ </script>
+
+ <style>
+/*    .examples-list dt {
+  display: list-item;
+  list-style: inside square;
+  border-bottom: dotted #cbc2b7 1px;
+  padding: 5px 0;
+}
+.examples-list dd {
+  padding: 10px 0;
+}
+.examples-list dd p {
+  padding: 15px;
+  background: #f4f3f0;
+  margin: 0;
+  border-radius: 5px;
+}*/
+/*
+.NFI-wrapper {}
+.NFI-button {}
+.NFI-button:hover {}
+.NFI-filename {}
+.NFI-current {}
+*/
+.nice {
+  /*border: solid #E95E45 1px;*/
+  background: #fff;
+  font-size: 14px;
+  display: block;
+  width: 100%;
+  height: 30px;
+  /*max-width: 360px;*/
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 0 0 2px #fff;
+  padding: 0;
+}
+/*.nice:hover {
+  border: solid #069 1px;
+}*/
+.nice .NFI-button {
+  height: 29px;
+  line-height: 30px;
+  background: #E95E45;
+  /*text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);*/
+  color: #fff;
+  width: 30%;
+  
+/*  font-weight: 700;*/
+  padding: 0;
+  margin: 0;
+  border-radius: 3px 0 0 3px;
+}
+.nice .NFI-button:hover {
+  color: #333333;
+}
+.nice .NFI-filename {
+  width: 70%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0;
+  display: block;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: 0; 
+  border: 0;
+}
+/*.test {
+  border: solid #ffa34f 1px;
+  box-shadow: 0 0 0 1px #fff;
+}
+.test:hover {
+  border: solid #830 1px;
+}
+.test .NFI-button {
+  background-color: #ffa34f;
+  color: #830;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.test .NFI-button:hover {
+  background: #830;
+  color: #fff;
+  text-shadow: none;
+}
+.test .NFI-filename {
+  border: solid #eee 1px;
+  color: #777;
+}*/
+
+
+
+</style>
+<?php 
+    //initializers
+    $id = $this->subscriberList->list_id;
+    $paginator = $this->paginator;
+    $count = $this->paginator->count();
+    $current_page = $paginator->getCurrentPageNumber();
+    $search_string = $this->search_string;
+    $form = $this->form;
+
+?>
+
+
+ <ul class="breadcrumb">
+    <li><a href="<?php echo $this->url(NULL, array('controller' => 'home', 'action' => 'index'));?>">Home</a></li>
+    <li><a href="<?php echo $this->url(NULL, array('controller' => 'subscription', 'action' => 'index'));?>">Subscriptions</a></li>
+    <li><?php echo $this->subscriberList->list_name;?></li>
+</ul>
+
+<div id="dialog" title="Alert!">
+  <p></p>
+</div> 
+ 
+    <table class="table" id="optionstable">
+        
+        <tr>
+            <th>
+                <button class="btn btn-sm" data-placement='bottom' title='Add subscriber' data-trigger='click' data-toggle="popover" data-content="<?php
+                        $submit_text = 'Save';
+                        $form_action = $this->url(NULL, array(
+                            'controller' => 'subscription',
+                            'action' => 'subscribe',
+                            'id' => $this->subscriberList->list_id,
+                        ));
+                        include 'subscriber.phtml'
+                    ?>">
+                    <span class="glyphicon glyphicon-plus"></span> Add Subscriber
+                    </button>
+                
+            </th>
+            
+            
+            <th title="download subscription list" >
+            <!--<div class="col-sm-12">-->
+            <div class="input-group">
+                <button class="btn btn-sm" onclick ="window.location.href='<?php echo $this->url(NULL, array(
+                            'controller' => 'subscription',
+                            'action' => 'backup',
+                            'id' => $id,
+                            //'page' => 1,
+                        ))?>'">Backup <span class="glyphicon glyphicon-floppy-save"></span>
+                    </button>
+                </div>
+            <!--</div>-->
+            </th>
+            
+            <th>
+            <!--<div class="col-lg-12">-->
+                <form onsubmit="return no_file()" enctype="multipart/form-data" title="upload subscriber list" class = 'form-inline' method="post" action="<?php echo $this->url(NULL, array(
+                            'controller' => 'subscription',
+                            'action' => 'upload',
+                            'id' => $id,
+                            'page' => 1,
+                        ))?>">    
+                    <div class='input-group'>
+                        <input class='nice input-sm form-control' name="filename" type='file' id='upload_control'>
+                        <span class="input-group-btn">
+                            <button class="btn btn-sm" style='min-width: 35px;' type="submit" name="submit" value="Save">
+                                <span class="glyphicon glyphicon-upload"></span>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            <!--</div>-->
+            </th>
+            
+            
+            <th>
+            <!--<div class="col-sm-12">-->
+                <form title="search subscriber" onsubmit="return empty_search()" method="post" action="<?php echo $this->url(NULL, array(
+                            'controller' => 'subscription',
+                            'action' => 'more',
+                            'id' => $id,
+                            'page' => 1,
+                        ))?>">                
+                    <div class="input-group"> 
+                        <input class="input-sm form-control" id='search_control' name="search" type="text" value="<?php echo $search_string;?>" placeholder=" Search records" oninput="search_key(this.value);"> 
+                            <span class="input-group-btn" >
+                                <button class="btn btn-sm" style='min-width: 35px;' type="submit" name="submit" value="">
+                                    <span class="glyphicon glyphicon-search"></span>
+                                </button>
+                            </span>
+                    </div>
+                </form>
+            <!--</div>-->
+            </th>
+            
+        </tr>
+        
+    </table>    
+    
+
+
+<div style="margin-top: -20px;">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Cell <span class="glyphicon glyphicon-phone"></span></th>
+            <th>Email <span class="glyphicon glyphicon-envelope"></span></th>
+            <th>Street Address</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <?php 
+            foreach ($paginator as $subscription){?>
+        <tr>
+            <td><?php echo $subscription->first_name;?></td>
+            <td><?php echo $subscription->last_name;?></td>
+            <td><?php echo $subscription->cell;?></td>
+            <td><?php echo $subscription->email;?></td>
+            <td><?php if (strlen($subscription->street_address) > 50 ) echo substr($subscription->street_address, 0, 50).'...'; else echo $subscription->street_address;?></td>
+            <td><a href="#" data-placement="left" title='Update subscriber' data-toggle="popover" data-content="<?php 
+                $submit_text = 'Update';
+                $form_action = $this->url(NULL, array(
+                        'controller' => 'subscription',
+                        'action' => 'edit',
+                        'id' => $this->subscriberList->list_id,
+                        'page' => $current_page,
+                        'user_id' => $subscription->id,
+                        
+                    ));
+                include 'subscriber.phtml';
+            ?>">
+                <span class="glyphicon glyphicon-edit"></span>
+                </a>  
+                <a title="unsubscribe" href='<?php echo $this->url(NULL,
+                    array(
+                        'controller' => 'subscription',
+                        'action' => 'unsubscribe',
+                        'id' => $id,
+                        'page' => $current_page,
+                        'user_id' => $subscription->id,
+                        ));?>' onclick=" return subscriber_delete($(this).attr('href'));"><span class="glyphicon glyphicon-trash"></span></a> 
+            </td>
+        </tr>
+        <?php }?>
+    </table>   
+    
+</div>     
+
+<?php if ( $this->paginator->count() > 0 ) {?>
+<div align="center">
+    <ul class="pagination">
+        <?php 
+            $currentPage = $current_page;
+            $lastPage = $count;
+
+            if ( $lastPage < 10 ){
+                $start_pos = 1;
+                $last_pos = $lastPage;
+            }else{
+                if ( $currentPage < 10 ){
+                    $start_pos = 1;
+                    $last_pos = 10;
+                }else if ( $currentPage > $lastPage - 10){
+                    $start_pos = $lastPage-10;
+                    $last_pos = $lastPage;
+                } else {
+                    $start_pos = $currentPage-5;
+                    $last_pos = $currentPage+5;
+                }
+            }
+        ?>
+        <li><a href="<?php echo $this->url(NULL, 
+                            array("controller" => 'subscription', 
+                                'action' => 'more', 
+                                'id' => $id, 
+                                'page' => 1,
+                                'search_string' => $search_string,
+                            ));?>" <?php if ( $currentPage == 1 ) echo 'class='.'\'not-active\'';?> > << </a></li>     
+        <li><a href="<?php echo $this->url(NULL, 
+                            array("controller" => 'subscription', 
+                                'action' => 'more', 
+                                'id' => $id, 
+                                'page' => $currentPage-1,
+                                'search_string' => $search_string,
+                            ));?>" <?php if ( $currentPage == 1 ) echo 'class='.'\'not-active\'';?>> < </a></li>     
+        <?php
+            for ($page_number=$start_pos; $page_number<= $last_pos; $page_number++){
+        ?>
+        <li class="<?php if ($page_number == $currentPage) echo "active";?>"><a href="<?php echo $this->url(NULL, 
+                            array("controller" => 'subscription', 
+                                'action' => 'more', 
+                                'id' => $id, 
+                                'page' => $page_number,
+                                'search_string' => $search_string,
+                            ));?>"><?php echo $page_number;?></a></li>
+        <?php }?>
+        <li><a href="<?php echo $this->url(NULL, 
+                            array("controller" => 'subscription', 
+                                'action' => 'more', 
+                                'id' => $id, 
+                                'page' => $currentPage+1,
+                                'search_string' => $search_string,
+                            ));?>" <?php if ( $currentPage == $lastPage ) echo 'class='.'\'not-active\'';?> > > </a></li>     
+        <li ><a  href="<?php echo $this->url(NULL, 
+                            array("controller" => 'subscription', 
+                                'action' => 'more', 
+                                'id' => $id, 
+                                'page' => $lastPage,
+                                'search_string' => $this->search_string,
+                            ));?>" <?php if ( $currentPage == $lastPage ) echo 'class='.'\'not-active\'';?> > >> </a></li>     
+    </ul>
+
+</div>
+    
+
+<?php }?>

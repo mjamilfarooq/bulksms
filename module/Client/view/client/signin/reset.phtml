@@ -1,0 +1,81 @@
+
+<script>
+    $(document).ready(function(){
+       $('#Password').validate({
+            rules: {
+                confirm_password: {
+                    equalTo: "input[name=password]",
+                },
+            },   
+            errorPlacement: function (error, element) {
+                error.appendTo(element.parent('div'));
+            },
+            messages:{
+                password: {
+                    required: "Please enter your new password.",
+                },
+                confirm_password: {
+                    equalTo: "Re-enter your new password.",
+                },
+            }
+        });
+    });
+</script>
+    
+<div class="col-lg-6" style="margin-top: 100px;">
+    
+<?php if ( !isset($this->status) ){ 
+$form = $this->form;
+$form->prepare();
+$form->setAttribute('action', '/client/signin/complete?token='.$this->reset_password_token);
+$form->setAttribute('method', 'post');
+$form->setAttribute('enctype','multipart/form-data');
+$form->setAttribute('class', 'form-horizontal');
+
+echo $this->form()->openTag($form);
+?>
+    
+    <div class="form-group">
+        <label class="col-md-4 control-label"></label>
+        <div class="col-md-8">
+            <h3>Set new password</h3>
+        </div>
+    </div>
+        
+        
+        
+    <div class="form-group required" style="margin-bottom: 3px;">
+            <?php echo $this->formLabel($form->get('password')); ?>
+            <div><?php 
+                echo $this->formElement($form->get('password'));
+                echo $this->formElementErrors($form->get('password'));
+            ?></div>
+        </div>
+        
+        <div class="form-group required" style="margin-bottom: 3px;">
+            <?php echo $this->formLabel($form->get('confirm_password')); ?>
+            <div><?php 
+                echo $this->formElement($form->get('confirm_password'));
+                echo $this->formElementErrors($form->get('confirm_password'));
+            ?></div>
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 3px;">
+            <label></label>
+            <div><?php 
+            echo $this->formElement($form->get('submit'));
+            echo $this->formElementErrors($form->get('submit'));
+        ?></div>
+        </div>
+        
+    
+
+
+<?php echo $this->form()->closeTag(); } else if (strcasecmp($this->status, 'complete') == 0) { ?>
+   
+        <p>Your password has been reset. please login to access your account</p>
+        <button class="btn btn-sm col-md-2" onclick="window.location.href='/client/signin/index'">Sign In</button>
+        
+   
+<?php } ?>
+</div>

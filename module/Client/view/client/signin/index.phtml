@@ -1,0 +1,146 @@
+<script>
+    $(document).ready(function(){
+        $('.input-group > input').addClass('form-control');
+
+        $('#Signin').validate({
+            errorPlacement: function (error, element) {
+                error.appendTo(element.parents('.input-group').next());
+            },
+            messages:{
+                email: "Please enter registered email ID or Signup for Registeration",
+                password: "Please enter your password",
+            }
+        });
+
+        $('input[type="checkbox"').css("-moz-transform","scale(1)");
+        $('input[type="checkbox"').css("-webkit-transform","scale(1)");
+
+//-ms-transform: scale(2); /* IE */
+//  -moz-transform: scale(2); /* FF */
+//  -webkit-transform: scale(2); /* Safari and Chrome */
+
+        $('select').addClass('input-sm');
+        $('input').addClass('input-sm');
+        $('button').addClass('btn-sm');
+        
+    });
+        
+    
+    
+    
+</script>
+
+<div class="col-lg-offset-3 col-lg-4" style="margin-top: 100px;">
+<?php 
+$form = $this->form;
+$form->prepare();
+$form->setAttribute('action', '/client/signin/process');
+$form->setAttribute('method', 'post');
+$form->setAttribute('class', 'form-horizontal form-validator');
+
+echo $this->form()->openTag($form);
+?>
+    <div class='jumbotron'>
+        
+        <h3><b>Sign In</b></h3>
+        
+        <div class="form-group" >
+            <!--<label></label>-->
+            <div class="input-wrap">
+            <div style="color: red">
+                <p><?php  echo $this->error;?></p>
+               
+            </div>
+            </div>
+        </div>    
+        
+        
+     
+        <div class="form-group" >
+            <?php // echo $this->formLabel($form->get('email')); ?>
+            <div class="input-wrap">
+                
+                <div class="input-group" >
+                    <span class="input-group-addon glyphicon glyphicon-envelope">
+                    </span>
+                    <?php 
+                        echo $this->formElement($form->get('email'));
+                    ?>
+                </div>
+                <p></p>
+                
+            </div>
+        </div>
+        
+
+
+        <div class="form-group">
+            <?php // echo $this->formLabel($form->get('password')); ?>
+            <div class="input-wrap">
+                <div class="input-group">
+                    <span class="input-group-addon glyphicon glyphicon-asterisk">
+                    </span>
+                    <?php 
+                        echo $this->formElement($form->get('password'));
+                        
+                    ?>
+                </div>
+                <p></p>
+            </div>
+        </div>
+
+        
+        
+        
+        <div class="form-group" >
+            <div class="input-wrap">
+                <div>
+                <div class="checkbox-inline" style="margin-left: 6px; margin-top: -6px; ">
+                    <label >
+                        <?php echo $this->formElement($form->get('remember_me'));?>
+                        Remember me
+                    </label>
+                </div>
+                <span class="pull-right"><a href="/client/signin/recover" >Forgot Password?</a></span>
+            </div>
+                
+            </div>
+        </div>
+        
+
+        
+
+        <div class="form-group">
+            <!--<label> </label>-->
+            <div class="input-wrap">
+            <div><?php 
+            echo $this->formElement($form->get('submit'));
+            echo $this->formElementErrors($form->get('submit'));
+        ?></div>
+            </div>
+        </div>
+        
+
+        <div class="form-group" style="margin-top: 6px">
+            <!--<label></label>-->
+            <div class="input-wrap">
+            <div>
+                <p style='font-weight: bold'>Don't have an account? <span class='pull-right'><a href="/client/signup/index" >Sign Up</a></span> </p>
+            </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <!--<label></label>-->
+            <div class="input-wrap">
+            <div>
+                <p style='font-weight: bold'>Can't access your account? <span class='pull-right'><a href="/client/signin/forgotpassword" >Recover</a></span> </p>
+            </div>
+            </div>
+        </div>
+
+        
+    </div>
+</div>
+
+<?php echo $this->form()->closeTag() ?>

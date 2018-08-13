@@ -1,0 +1,62 @@
+<script>
+    $(document).ready(function(){
+       var info = '<?php echo $this->flashMessenger()->render();?>';
+       if ( info != ''){     
+           $('#dialog > p').html(info);
+            
+            $('#dialog').dialog({ modal: true,
+                    buttons: {
+                    OK: function() {
+                      $( this ).dialog( "close" );
+                    } 
+                  }
+            });
+        }
+        
+        $('button').addClass('btn-sm');
+    });
+
+</script>
+
+<div class="container">
+    <h2 class="h2 col-lg-offset-1">Choose your package</h2>
+</div>
+
+<div id='dialog' title='Info'> 
+    <p></p>
+</div>
+<div class="row">
+    <div class="col-lg-1"></div>
+    <?php foreach ( $sms_package as $package ) { ?>
+    <div class="col-lg-2">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><span class='dollar-sign'>$ </span><?php echo $this->translate($package->price) ?></h3>
+            </div>
+            <div class="panel-body">
+                <table class="table-price">
+                    <thead>
+                        <tr>
+                        
+                            <th><?php echo $this->translate( strtoupper($package->package_name)); ?></th>
+                        
+                    </tr>
+                    </thead>
+                    <tr><td><?php echo $this->translate($package->sms_quota).' SMS'; ?></td></tr>
+                    <tr><td><?php echo $this->translate($package->validity).' days'; ?></td></tr>
+                    <tr><td><?php echo $this->translate($package->number_of_subscribers).' subscribers' ?></td></tr>
+                    <tr><td><?php echo '-' ?></td></tr>
+                    <tr><td><?php echo '-' ?></td></tr>
+                    <tr><td><?php echo '-' ?></td></tr>
+                    <tr><td><?php echo '-' ?></td></tr>
+                    
+                    <?php $purchase_link = '/client/subscription/add?package='.$package->package_id;?>
+                </table>
+                <p><button class="btn btn-price" onclick="window.location.href='<?php echo $purchase_link?>'" ><?php echo $this->translate('PURCHASE') ?></button></p>
+            </div>
+        </div>
+    </div>
+    <?php } ?>
+    
+</div>
+
