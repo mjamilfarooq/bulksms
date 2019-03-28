@@ -137,7 +137,8 @@ class Module implements AutoloaderProviderInterface
                 },
 		    
 		'Mailer' => function($sm){
-			require 'libphp-phpmailer/PHPMailerAutoload.php';
+			require_once 'libphp-phpmailer/class.phpmailer.php';
+
 			$mail = new \PHPMailer();
 			//Send mail using gmail
 			
