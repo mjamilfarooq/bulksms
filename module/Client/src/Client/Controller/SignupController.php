@@ -96,11 +96,7 @@ class SignupController extends AbstractActionController
             return  false;
 
         }
-
-//        require_once 'libphp-phpmailer/class.phpmailer.php';
-        
-        require 'libphp-phpmailer/PHPMailerAutoload.php';
-        
+                
         $view = new \Zend\View\Renderer\PhpRenderer();
         $resolver = new \Zend\View\Resolver\TemplateMapResolver();
         $resolver->setMap(array(
@@ -118,26 +114,11 @@ class SignupController extends AbstractActionController
         $bodyMessage->type = 'text/html';
         $bodyPart->setParts(array($bodyMessage));
  
-//        \Zend\Debug\Debug::dump($bodyMessage);
-//        \Zend\Debug\Debug::dump($bodyPart);
-//        
-        
-        $mail = new \PHPMailer();
-        //Send mail using gmail
-        if(1){
-            $mail->IsSMTP(); // telling the class to use SMTP
-            $mail->SMTPAuth = true; // enable SMTP authentication
-            $mail->SMTPSecure = "tls"; // sets the prefix to the servier
-            $mail->Host = "smtp.gmail.com"; // sets GMAIL as the SMTP server
-            $mail->Port = 587; // set the SMTP port for the GMAIL server
-            $mail->Username = "jamil.farooq@gorillabox.net"; // GMAIL username
-            $mail->Password = "p35215824p-"; // GMAIL password
-        }
+        $mail = $this->getServiceLocator()->get('Mailer');
 
         
         //Typical mail data
         $mail->AddAddress($user->email, $user->last_name);
-        $mail->SetFrom('jamil.farooq@gorillabox.net', 'BulkSMS Support');
         $mail->Subject = "Account activation email";
         $mail->Body = "Hi ".$user->last_name.' please access following link to complete the activation process on BulkSMS.com http://bulksms/client/signup/setup?token='.$user->signup_token;
         $mail->Body = $bodyMessage->getContent() ;
