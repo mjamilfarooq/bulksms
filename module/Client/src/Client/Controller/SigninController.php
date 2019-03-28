@@ -254,8 +254,7 @@ class SigninController extends AbstractActionController
     
     
     protected function send_reset_password_email($user){
-        require_once 'libphp-phpmailer/class.phpmailer.php';
-        
+                
         $view = new \Zend\View\Renderer\PhpRenderer();
         $resolver = new \Zend\View\Resolver\TemplateMapResolver();
         $resolver->setMap(array(
