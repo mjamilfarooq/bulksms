@@ -17,6 +17,7 @@ use Zend\Authentication\AuthenticationService;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
 
+
 class Module implements AutoloaderProviderInterface
 {
     public function getAutoloaderConfig()
@@ -134,6 +135,24 @@ class Module implements AutoloaderProviderInterface
                     $filter = new \Client\Form\SubscribeFilter();
                     return $filter;
                 },
+		    
+		'Mailer' => function($sm){
+			require 'libphp-phpmailer/PHPMailerAutoload.php';
+			$mail = new \PHPMailer();
+			//Send mail using gmail
+			
+			$mail->IsSMTP(); // telling the class to use SMTP
+			$mail->SMTPAuth = true; // enable SMTP authentication
+			$mail->SMTPSecure = "tls"; // sets the prefix to the servier
+			$mail->Host = "smtp.gmail.com"; // sets GMAIL as the SMTP server
+			$mail->Port = 587; // set the SMTP port for the GMAIL server
+			$mail->Username = "noreply@example.com"; // GMAIL username
+			$mail->Password = "12345678"; // GMAIL password
+			$mail->SetFrom('noreply@example.com', 'BulkSMS Support');
+			
+			return $mail;
+
+		},
             ),
             'invokeables' => array(),
             'services' => array(),
