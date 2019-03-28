@@ -274,22 +274,10 @@ class SigninController extends AbstractActionController
         $bodyPart->setParts(array($bodyMessage));
         
         
-        $mail = new \PHPMailer();
-        //Send mail using gmail
-        if(1){
-            $mail->IsSMTP(); // telling the class to use SMTP
-            $mail->SMTPAuth = true; // enable SMTP authentication
-            $mail->SMTPSecure = "ssl"; // sets the prefix to the servier
-            $mail->Host = "smtp.gmail.com"; // sets GMAIL as the SMTP server
-            $mail->Port = 465; // set the SMTP port for the GMAIL server
-            $mail->Username = "jamil.farooq@gorillabox.net"; // GMAIL username
-            $mail->Password = "p35215824p-"; // GMAIL password
-        }
-
+        $mail = $this->getServiceLocator()->get('Mailer');
         
         //Typical mail data
         $mail->AddAddress($user->email, $user->last_name);
-        $mail->SetFrom('jamil.farooq@gorillabox.net', 'BulkSMS Support');
         $mail->Subject = "Reset Password email";
 //        $mail->Body = "Hi ".$user->last_name.' please access following link to reset your password on BulkSMS.com http://bulk_sms/client/signin/reset?token='.$user->reset_password_token;
         $mail->Body = $bodyMessage->getContent();
