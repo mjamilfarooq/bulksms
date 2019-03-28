@@ -16,7 +16,7 @@ return array(
         'driver' => 'Pdo',
         'dsn' => 'mysql:dbname=bulk_sms;host=localhost',
         'username' => 'root',
-        'password' => 'p@ssword12',
+        'password' => 'Admin2015',
         'driver_options' => array(
             PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''
         ),
