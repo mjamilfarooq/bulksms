@@ -29,3 +29,9 @@ project and you should be ready to go! It should look something like below:
             Allow from all
         </Directory>
     </VirtualHost>
+    
+  
+  
+  ### DockerFile
+  
+  To setup quickly dockerfile is added to repo which setups apache settings and initialize database. In client module one still needs to setup email/password information for the mailer function that sends emails to client for signup and forget password functionality.
